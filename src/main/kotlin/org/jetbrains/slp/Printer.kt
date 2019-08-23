@@ -1,7 +1,7 @@
 package org.jetbrains.slp
 
+import org.jetbrains.slp.filters.java.JavaCodeFilter
 import org.jetbrains.slp.modeling.runners.ModelRunner
-import org.jetbrains.slp.filters.codeSpaceFilter
 import java.io.File
 
 object Printer {
@@ -50,8 +50,9 @@ object Printer {
             println("${it.key}:".toUpperCase())
             println(it.value)
             println("-".repeat(40))
-            println("${it.value}${codeSpaceFilter(
-              modelRunner.getExpandedSuggestion(it.value)).trim()}")
+            println("${it.value}${JavaCodeFilter.applyFilter(
+                modelRunner.getExpandedSuggestion(it.value)
+            ).trim()}")
         }
     }
 }

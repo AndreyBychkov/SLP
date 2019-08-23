@@ -1,7 +1,8 @@
 package org.jetbrains.slp
 
 import org.jetbrains.slp.counting.giga.GigaCounter
-import org.jetbrains.slp.filters.getCodeBetweenCodeDelimiters
+import org.jetbrains.slp.filters.java.getCodeBetweenCodeDelimiters
+import org.jetbrains.slp.filters.java.JavaCodeFilter
 import org.jetbrains.slp.lexing.Lexer
 import org.jetbrains.slp.lexing.NaiveCodeLexer
 import org.jetbrains.slp.lexing.LexerRunner
