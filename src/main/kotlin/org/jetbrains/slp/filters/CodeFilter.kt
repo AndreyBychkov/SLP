@@ -1,7 +1,8 @@
 package org.jetbrains.slp.filters
 
 abstract class CodeFilter {
-    abstract val delimiters: List<String>
+    abstract val codeDelimiters: List<String>
+    abstract val symbolsToExclude: List<String>
 
     private val filters: MutableList<(String) -> String> = mutableListOf()
 
@@ -10,7 +11,7 @@ abstract class CodeFilter {
     }
 
     fun getCodeBetweenDelimiters(input: String): List<String> {
-        val results = Regex("""(.*?)([${delimiters.joinToString("")}])""").findAll(input).toList()
+        val results = Regex("""(.*?)([${codeDelimiters.joinToString("")}])""").findAll(input).toList()
 
         return if (results.isNotEmpty())
             results.map { "${it.groupValues[1]}${it.groupValues[2]}" }
@@ -20,4 +21,10 @@ abstract class CodeFilter {
 
     fun applyFilter(input: String) =
         filters.fold(input, { acc, function -> function(acc) })
+    
+    fun excludeForbiddenSymbols(input: List<String>) =
+        input.filter { it !in symbolsToExclude }
+
+    fun excludeForbiddenSymbols(input: Sequence<String>) =
+        input.filter { it !in symbolsToExclude }
 }

@@ -1,8 +1,6 @@
 package org.jetbrains.slp
 
 import org.jetbrains.slp.counting.giga.GigaCounter
-import org.jetbrains.slp.filters.java.getCodeBetweenCodeDelimiters
-import org.jetbrains.slp.filters.java.JavaCodeFilter
 import org.jetbrains.slp.lexing.Lexer
 import org.jetbrains.slp.lexing.NaiveCodeLexer
 import org.jetbrains.slp.lexing.LexerRunner
@@ -32,7 +30,7 @@ fun makeLexer(lexerModel: Lexer, extension: String = "", isPerLine: Boolean = fa
 }
 
 private fun configDefaultModel(): Model {
-    var model: Model = JMModel(6, counter = GigaCounter())
+    var model: Model = JMModel(10, counter = GigaCounter())
     model = MixModel.standard(model, CacheModel())
     return model
 }
@@ -109,14 +107,16 @@ fun ModelRunner.getExpandedSuggestion(code: String) =
     getAllExpandingSuggestions(code, 1).first()
 
 fun ModelRunner.getAllExpandingSuggestions(code: String, limit: Int = 3): List<String> {
+    fun String.getCodeBetweenCodeDelimiters() = lexerRunner.filter.getCodeBetweenDelimiters(this)
+    fun List<String>.applyFilter() = this.map { lexerRunner.filter.applyFilter(it) }
+
     return expandCode(code)
         .removePrefix(code)
         .getCodeBetweenCodeDelimiters()
         .take(limit)
-        .map { "${it.groupValues[1]}${it.groupValues[2]}" }
-        .toList()
         .getExpandingMatches(1)
         .map { it.joinToString("") }
+        .applyFilter()
 
 }
 

@@ -1,6 +1,6 @@
 package org.jetbrains.slp
 
-import org.jetbrains.slp.filters.java.JavaCodeFilter
+import org.jetbrains.slp.filters.lang.JavaCodeFilter
 import org.jetbrains.slp.modeling.runners.ModelRunner
 import java.io.File
 
