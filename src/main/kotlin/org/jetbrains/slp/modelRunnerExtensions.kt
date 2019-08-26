@@ -14,28 +14,6 @@ import java.io.File
 import java.util.*
 
 
-fun makeModel(
-    lexer: LexerRunner = makeLexer(NaiveCodeLexer()),
-    vocabulary: Vocabulary = Vocabulary(),
-    model: Model = configDefaultModel()
-): ModelRunner {
-    return ModelRunner(model, lexer, vocabulary)
-}
-
-fun makeLexer(lexerModel: Lexer, extension: String = "", isPerLine: Boolean = false): LexerRunner {
-    return LexerRunner(lexerModel, isPerLine).apply {
-        setExtension(extension)
-        setSentenceMarkers(true)
-    }
-}
-
-private fun configDefaultModel(): Model {
-    var model: Model = JMModel(10, counter = GigaCounter())
-    model = MixModel.standard(model, CacheModel())
-    return model
-}
-
-
 fun ModelRunner.train(path: File) {
     when {
         path.isDirectory -> learnDirectory(path)
