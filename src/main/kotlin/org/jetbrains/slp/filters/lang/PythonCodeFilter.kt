@@ -15,7 +15,8 @@ object PythonCodeFilter: CodeFilter() {
             { Filters.leftBraceFilter(it) },
             { Filters.rightBraceFilter(it) },
             { Filters.colonFilter(it) },
-            { Filters.arrowFilter(it) }
+            { Filters.arrowFilter(it) },
+            { it.trim() }
         )
     }
 }

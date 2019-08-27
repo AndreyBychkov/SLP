@@ -17,7 +17,8 @@ object JavaCodeFilter : CodeFilter() {
             { Filters.semicolonFilter(it) },
             { Filters.leftIncrementDecrementOperatorFilter(it) },
             { Filters.rightIncrementDecrementOperatorFilter(it) },
-            { Filters.arrowFilter(it) }
+            { Filters.arrowFilter(it) },
+            { it.trim() }
         )
     }
 }

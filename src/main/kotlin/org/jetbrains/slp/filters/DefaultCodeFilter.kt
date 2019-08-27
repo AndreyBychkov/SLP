@@ -10,7 +10,8 @@ internal object DefaultCodeFilter: CodeFilter() {
             { Filters.commaFilter(it) },
             { Filters.invokeFilter(it) },
             { Filters.leftBraceFilter(it) },
-            { Filters.rightBraceFilter(it) }
+            { Filters.rightBraceFilter(it) },
+            { it.trim() }
         )
     }
 }
