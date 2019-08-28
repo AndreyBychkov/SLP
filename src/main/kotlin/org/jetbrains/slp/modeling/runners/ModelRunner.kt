@@ -131,7 +131,7 @@ open class ModelRunner(val model: Model, val lexerRunner: LexerRunner, val vocab
 
     }
 
-    private fun forgetFile(f: File) {
+    fun forgetFile(f: File) {
         if (!lexerRunner.willLexFile(f))
             return
         this.model.notify(f)

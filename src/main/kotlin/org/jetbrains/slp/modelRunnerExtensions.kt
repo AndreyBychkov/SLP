@@ -18,7 +18,15 @@ fun ModelRunner.train(path: File) {
     when {
         path.isDirectory -> learnDirectory(path)
         path.isFile -> learnFile(path)
-        else -> throw IllegalArgumentException("Train must be directory of file")
+        else -> throw IllegalArgumentException("Argument must be directory of file")
+    }
+}
+
+fun ModelRunner.forget(file: File) {
+    when {
+        file.isDirectory -> forgetDirectory(file)
+        file.isFile -> forgetFile(file)
+        else -> throw IllegalArgumentException("Argument must be directory of file")
     }
 }
 
