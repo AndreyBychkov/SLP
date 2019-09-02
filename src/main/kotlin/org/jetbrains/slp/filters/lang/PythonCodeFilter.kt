@@ -16,6 +16,7 @@ object PythonCodeFilter: CodeFilter() {
             { Filters.rightBraceFilter(it) },
             { Filters.colonFilter(it) },
             { Filters.arrowFilter(it) },
+            { Filters.vocabularyFilter(it) },
             { it.trim() }
         )
     }

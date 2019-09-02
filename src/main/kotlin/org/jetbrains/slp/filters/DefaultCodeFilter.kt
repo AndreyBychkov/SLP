@@ -11,6 +11,7 @@ internal object DefaultCodeFilter: CodeFilter() {
             { Filters.invokeFilter(it) },
             { Filters.leftBraceFilter(it) },
             { Filters.rightBraceFilter(it) },
+            { Filters.vocabularyFilter(it) },
             { it.trim() }
         )
     }

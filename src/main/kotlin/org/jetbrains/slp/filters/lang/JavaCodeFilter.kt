@@ -18,6 +18,7 @@ object JavaCodeFilter : CodeFilter() {
             { Filters.leftIncrementDecrementOperatorFilter(it) },
             { Filters.rightIncrementDecrementOperatorFilter(it) },
             { Filters.arrowFilter(it) },
+            { Filters.vocabularyFilter(it) },
             { it.trim() }
         )
     }
