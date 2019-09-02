@@ -103,7 +103,7 @@ fun ModelRunner.getAllExpandingSuggestions(code: String, limit: Int = 3): List<S
         .getExpandingMatches(1)
         .map { it.joinToString("") }
         .applyFilter()
-
+        .filter { it.isNotEmpty() }
 }
 
 tailrec fun ModelRunner.expandCode(code: String, iterNum: Int = 100): String {
@@ -113,7 +113,11 @@ tailrec fun ModelRunner.expandCode(code: String, iterNum: Int = 100): String {
     if (code.endsWith("</s>"))
         return code.removeSuffix("</s>")
 
-    val currentSuggestion = getSuggestion(code)
+    val currentSuggestion = try {
+        getSuggestion(code)
+    } catch (exception: KotlinNullPointerException) {
+        Vocabulary.endOfString
+    }
 
     return expandCode("$code $currentSuggestion", iterNum - 1)
 }

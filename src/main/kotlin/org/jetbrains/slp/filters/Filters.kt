@@ -34,11 +34,5 @@ object Filters {
         Regex("""-\s>""").replace(input, "->")
 
     fun vocabularyFilter(input: String) =
-        vocabularyBeginOfStringFilter(vocabularyEndOfStringFilter(input))
-
-    private fun vocabularyBeginOfStringFilter(input: String) =
-        Regex("""(${Vocabulary.beginOfString})?(.*)""").replace(input, "$2")
-
-    private fun vocabularyEndOfStringFilter(input: String) =
-        Regex("""(.*?)(${Vocabulary.endOfString})""").replace(input, "$1")
+        input.replace(Vocabulary.beginOfString, "").replace(Vocabulary.endOfString, "")
 }
