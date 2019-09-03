@@ -13,7 +13,7 @@ import kotlin.math.roundToLong
 
 object VocabularyRunner {
 
-    private val PRINT_FREQ = 1000000
+    private const val PRINT_FREQ = 1000000
     private var cutOff = 0
 
     /**
@@ -74,14 +74,15 @@ object VocabularyRunner {
         return vocabulary
     }
 
-    /**
-     * Read vocabulary from file, where it is assumed that the vocabulary is written as per [Vocabulary.write]:
-     * tab-separated, having three columns per line: count, index and token (which may contain tabs))
-     * <br></br>*Note:*: index is assumed to be strictly incremental starting at 0!
-     * @return
-     * @return
-     */
-    fun read(file: File): Vocabulary {
+
+    fun read(file: File) = when {
+        file.isDirectory -> readFile(getVocabularyFile(file))
+        file.isFile -> readFile(file)
+        else -> throw IllegalArgumentException("Argument must be directory of file")
+    }
+
+
+    private fun readFile(file: File): Vocabulary {
         val vocabulary = Vocabulary()
 
         Reader.readLines(file)
@@ -100,14 +101,13 @@ object VocabularyRunner {
         return vocabulary
     }
 
-    /**
-     * Writes vocabulary to file with one entry per line. Format: tab-separated count, index and word.
-     * <br></br>
-     * Note: count is informative only and is not updated during training!
-     *
-     * @param file File to write vocabulary to.
-     */
-    fun write(vocabulary: Vocabulary, file: File) {
+    fun write(vocabulary: Vocabulary, file: File) = when {
+        file.isDirectory -> writeFile(vocabulary, getVocabularyFile(file))
+        file.isFile -> writeFile(vocabulary, file)
+        else -> throw IllegalArgumentException("Argument must be directory of file")
+    }
+
+    private fun writeFile(vocabulary: Vocabulary, file: File) {
         try {
             BufferedWriter(OutputStreamWriter(FileOutputStream(file), StandardCharsets.UTF_8)).use { fw ->
                 for (i in 0 until vocabulary.size()) {
@@ -120,6 +120,8 @@ object VocabularyRunner {
             println("Error writing vocabulary in Vocabulary.toFile()")
             e.printStackTrace()
         }
-
     }
+
+    private fun getVocabularyFile(directory: File) =
+        File(directory.path + File.pathSeparator + "vocabulary.tsv")
 }

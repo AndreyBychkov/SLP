@@ -1,11 +1,8 @@
 package org.jetbrains.slp.modeling.runners
 
-import org.jetbrains.slp.Language
 import org.jetbrains.slp.lexing.Lexer
-import org.jetbrains.slp.lexing.LexerResolver
 import org.jetbrains.slp.lexing.LexerRunner
 import org.jetbrains.slp.modeling.Model
-import org.jetbrains.slp.modeling.mix.InverseMixModel
 import org.jetbrains.slp.modeling.ngram.NGramModel
 import org.jetbrains.slp.translating.Vocabulary
 import org.jetbrains.slp.translating.VocabularyRunner
@@ -32,12 +29,12 @@ import kotlin.streams.asStream
  */
 open class ModelRunner(val model: Model, val lexerRunner: LexerRunner, val vocabulary: Vocabulary = Vocabulary()) {
 
-    private var selfTesting = false
+    var selfTesting = false
 
-    private val LEARN_PRINT_INTERVAL: Long = 1000000
+    private val learnPrintInterval: Long = 1000000
     private var learnStats = LongArray(2)
 
-    private val MODEL_PRINT_INTERVAL = 100000
+    private val modelPrintInterval = 100000
     private var modelStats = LongArray(2)
     private var ent = 0.0
     private var mrr = 0.0
@@ -51,33 +48,25 @@ open class ModelRunner(val model: Model, val lexerRunner: LexerRunner, val vocab
      * with the current [ModelRunner]'s [LexerRunner] and [Vocabulary]
      */
     fun copyForModel(model: Model): ModelRunner {
-        return ModelRunner(model, this.lexerRunner, this.vocabulary)
+        return ModelRunner(model, lexerRunner, vocabulary)
     }
 
-    /**
-     * Enables self testing: if we are testing on data that we also trained on, and our models are able to forget events,
-     * we can simulated training on all-but one sequence (the one we are modeling) by temporarily forgetting
-     * an event, modeling it and re-learning it afterwards. This maximizes use of context information and can be used
-     * to simulate full cross-validation.
-     *
-     * @param selfTesting If true, will temporarily "forget" every sequence before modeling it and "re-learn" it afterwards
-     */
-    fun setSelfTesting(selfTesting: Boolean) {
-        this.selfTesting = selfTesting
+    fun train(file: File, selectedModel: Model) {
+        when {
+            file.isDirectory -> learnDirectory(file)
+            file.isFile -> learnFile(file)
+            else -> throw IllegalArgumentException("Argument must be directory of file")
+        }
     }
 
-    fun getSelfTesting(): Boolean {
-        return this.selfTesting
-    }
-
-    fun learnDirectory(file: File) {
+    fun learnDirectory(file: File, selectedModel: Model = model) {
         learnStats = longArrayOf(0, -System.currentTimeMillis())
         lexerRunner.lexDirectory(file)!!
             .forEach { p ->
-                model.notify(p.first)
-                learnTokens(p.second)
+                selectedModel.notify(p.first)
+                learnTokens(p.second, selectedModel)
             }
-        if (learnStats[0] > LEARN_PRINT_INTERVAL && this.learnStats[1] != 0L) {
+        if (learnStats[0] > learnPrintInterval && learnStats[1] != 0L) {
             System.out.printf(
                 "Counting complete: %d tokens processed in %ds\n",
                 this.learnStats[0], (System.currentTimeMillis() + this.learnStats[1]) / 1000
@@ -85,27 +74,27 @@ open class ModelRunner(val model: Model, val lexerRunner: LexerRunner, val vocab
         }
     }
 
-    fun learnFile(f: File) {
+    fun learnFile(f: File, selectedModel: Model = model) {
         if (!lexerRunner.willLexFile(f))
             return
 
-        model.notify(f)
-        learnTokens(lexerRunner.lexFile(f))
+        selectedModel.notify(f)
+        learnTokens(lexerRunner.lexFile(f), selectedModel)
     }
 
-    fun learnContent(content: String) {
-        learnTokens(lexerRunner.lexText(content))
+    fun learnContent(content: String, selectedModel: Model = model) {
+        learnTokens(lexerRunner.lexText(content), selectedModel)
     }
 
-    private fun learnTokens(lexed: Sequence<Sequence<String>>) {
+    protected fun learnTokens(lexed: Sequence<Sequence<String>>, selectedModel: Model = model) {
         if (lexerRunner.isPerLine) {
             lexed
                 .map { vocabulary.toIndices(it) }
                 .map { it.onEach { logLearningProgress() } }
                 .map { it.toList() }
-                .forEach { model.learn(it) }
+                .forEach { selectedModel.learn(it) }
         } else {
-            model.learn(lexed
+            selectedModel.learn(lexed
                 .map { it.onEach { logLearningProgress() } }
                 .flatMap { vocabulary.toIndices(it) }
                 .toList()
@@ -114,7 +103,7 @@ open class ModelRunner(val model: Model, val lexerRunner: LexerRunner, val vocab
     }
 
     private fun logLearningProgress() {
-        if (++learnStats[0] % LEARN_PRINT_INTERVAL == 0L && learnStats[1] != 0L) {
+        if (++learnStats[0] % learnPrintInterval == 0L && learnStats[1] != 0L) {
             System.out.printf(
                 "Counting: %dM tokens processed in %ds\n",
                 (learnStats[0] / 1e6).roundToInt(),
@@ -123,36 +112,44 @@ open class ModelRunner(val model: Model, val lexerRunner: LexerRunner, val vocab
         }
     }
 
-    fun forgetDirectory(file: File) {
+    fun forget(file: File, selectedModel: Model) {
+        when {
+            file.isDirectory -> forgetDirectory(file, selectedModel)
+            file.isFile -> forgetFile(file, selectedModel)
+            else -> throw IllegalArgumentException("Argument must be directory of file")
+        }
+    }
+
+    fun forgetDirectory(file: File, selectedModel: Model = model) {
         try {
             Files.walk(file.toPath())
                 .map { it.toFile() }
                 .filter{ it.isFile }
-                .forEach { forgetFile(it) }
+                .forEach { forgetFile(it, selectedModel) }
         } catch (e: IOException) {
             e.printStackTrace()
         }
 
     }
 
-    fun forgetFile(f: File) {
+    fun forgetFile(f: File, selectedModel: Model = model) {
         if (!lexerRunner.willLexFile(f))
             return
-        this.model.notify(f)
-        forgetTokens(lexerRunner.lexFile(f))
+        selectedModel.notify(f)
+        forgetTokens(lexerRunner.lexFile(f), selectedModel)
     }
 
-    fun forgetContent(content: String) {
-        forgetTokens(lexerRunner.lexText(content))
+    fun forgetContent(content: String, selectedModel: Model) {
+        forgetTokens(lexerRunner.lexText(content), selectedModel)
     }
 
-    private fun forgetTokens(lexed: Sequence<Sequence<String>>) {
+    private fun forgetTokens(lexed: Sequence<Sequence<String>>, selectedModel: Model = model) {
         if (lexerRunner.isPerLine) {
             lexed.map { vocabulary.toIndices(it) }
                 .map { it.toList() }
-                .forEach { model.forget(it) }
+                .forEach { selectedModel.forget(it) }
         } else {
-            model.forget(
+            selectedModel.forget(
                 lexed
                     .flatMap { vocabulary.toIndices(it) }
                     .toList()
@@ -225,7 +222,7 @@ open class ModelRunner(val model: Model, val lexerRunner: LexerRunner, val vocab
         val prevCount = modelStats[0]
         modelStats[0] += stats.count
         ent += stats.sum
-        if (modelStats[0] / MODEL_PRINT_INTERVAL > prevCount / MODEL_PRINT_INTERVAL && modelStats[1] != 0L) {
+        if (modelStats[0] / modelPrintInterval > prevCount / modelPrintInterval && modelStats[1] != 0L) {
             System.out.printf(
                 "Modeling: %dK tokens processed in %ds, avg. entropy: %.4f\n",
                 (modelStats[0] / 1e3).roundToInt(),
@@ -307,7 +304,7 @@ open class ModelRunner(val model: Model, val lexerRunner: LexerRunner, val vocab
         modelStats[0] += stats.count
         mrr += stats.sum
 
-        if (modelStats[0] / MODEL_PRINT_INTERVAL > prevCount / MODEL_PRINT_INTERVAL && modelStats[1] != 0L) {
+        if (modelStats[0] / modelPrintInterval > prevCount / modelPrintInterval && modelStats[1] != 0L) {
             System.out.printf(
                 "Predicting: %dK tokens processed in %ds, avg. MRR: %.4f\n",
                 (modelStats[0] / 1e3).roundToInt(),
@@ -390,9 +387,9 @@ open class ModelRunner(val model: Model, val lexerRunner: LexerRunner, val vocab
         return -1
     }
 
-    fun save(directory: File) {
+    open fun save(directory: File) {
         model.save(directory)
-        VocabularyRunner.write(vocabulary, getVocabularyFile(directory))
+        VocabularyRunner.write(vocabulary, directory)
     }
 
     companion object {
@@ -409,17 +406,5 @@ open class ModelRunner(val model: Model, val lexerRunner: LexerRunner, val vocab
         fun toMRR(ix: Int): Double {
             return if (ix >= 0) 1.0 / (ix + 1) else 0.0
         }
-
-        fun load(directory: File, language: Language): ModelRunner {
-            return ModelRunner(
-                // TODO("make it work not only for InverseMix")
-                InverseMixModel.load(directory),
-                LexerResolver.extensionToLexer(language.extensions.first()),
-                VocabularyRunner.read(getVocabularyFile(directory))
-            )
-        }
-
-        private fun getVocabularyFile(directory: File) =
-            File(directory.path + File.pathSeparator + "vocabulary.tsv")
     }
 }
