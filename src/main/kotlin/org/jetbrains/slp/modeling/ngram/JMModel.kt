@@ -2,6 +2,7 @@ package org.jetbrains.slp.modeling.ngram
 
 import org.jetbrains.slp.counting.Counter
 import org.jetbrains.slp.counting.trie.MapTrieCounter
+import java.io.File
 
 class JMModel(
     order: Int = 6,
@@ -24,8 +25,6 @@ class JMModel(
 
     override val config = JMMConfig(order, this::class.java.toString(), lambda)
 
-/*  IO functionality temporally excluded to get rid of jboss-marshalling dependency
-
     override fun load(directory: File): JMModel {
         val counter = loadCounter(directory)
         val config = loadConfig<JMMConfig>(directory)
@@ -33,13 +32,11 @@ class JMModel(
         return JMModel(config.order, config.lambda, counter)
     }
 
- */
-
     companion object {
         private val DEFAULT_LAMBDA = 0.5
 
-        //fun load(directory: File) = JMModel().load(directory)
-        //fun save(directory: File, model: JMModel) = model.save(directory)
+        fun load(directory: File) = JMModel().load(directory)
+        fun save(directory: File, model: JMModel) = model.save(directory)
 
     }
 }

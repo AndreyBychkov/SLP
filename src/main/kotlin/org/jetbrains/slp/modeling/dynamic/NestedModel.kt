@@ -184,4 +184,12 @@ class NestedModel @JvmOverloads constructor(
         return lineage
     }
 
+    override fun save(directory: File) {
+        // TODO("not implemented")
+    }
+
+    override fun load(directory: File): Model {
+        TODO("not implemented")
+    }
+
 }

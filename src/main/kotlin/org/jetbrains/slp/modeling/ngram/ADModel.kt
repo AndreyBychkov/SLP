@@ -2,6 +2,8 @@ package org.jetbrains.slp.modeling.ngram
 
 import org.jetbrains.slp.counting.Counter
 import org.jetbrains.slp.counting.trie.MapTrieCounter
+import org.jetbrains.slp.modeling.Model
+import java.io.File
 import kotlin.math.max
 
 
@@ -27,15 +29,15 @@ class ADModel(order: Int = 6, counter: Counter = MapTrieCounter()) : NGramModel(
 
     override val config = Config(order, "${this::class.java}")
 
-    //override fun load(directory: File): Model {
-    //    val counter = loadCounter(directory)
-    //    val config = loadConfig<Config>(directory)
-    //
-    //    return ADModel(config.order, counter)
-    //}
-    //
-    //companion object {
-    //    fun load(directory: File) = ADModel().load(directory)
-    //    fun save(directory: File, model: ADModel) = model.save(directory)
-    //}
+    override fun load(directory: File): Model {
+        val counter = loadCounter(directory)
+        val config = loadConfig<Config>(directory)
+
+        return ADModel(config.order, counter)
+    }
+
+    companion object {
+        fun load(directory: File) = ADModel().load(directory)
+        fun save(directory: File, model: ADModel) = model.save(directory)
+    }
 }

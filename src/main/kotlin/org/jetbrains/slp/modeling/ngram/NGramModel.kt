@@ -4,6 +4,7 @@ package org.jetbrains.slp.modeling.ngram
 import com.google.gson.Gson
 import com.google.gson.stream.JsonReader
 import org.jetbrains.slp.counting.Counter
+import org.jetbrains.slp.counting.io.CounterIO
 import org.jetbrains.slp.counting.trie.MapTrieCounter
 import java.io.File
 import java.lang.reflect.InvocationTargetException
@@ -11,6 +12,7 @@ import java.util.HashSet
 import java.util.stream.Collectors
 
 import org.jetbrains.slp.modeling.AbstractModel
+import org.jetbrains.slp.modeling.Model
 import org.jetbrains.slp.modeling.runners.ModelRunner
 import org.jetbrains.slp.sequencing.NGramSequencer
 import java.io.FileReader
@@ -110,16 +112,16 @@ abstract class NGramModel @JvmOverloads constructor(
     protected open val config: Config =
         Config(order, this::class.java.toString())
 
-    //override fun save(directory: File) {
-    //    saveCounter(directory)
-    //    saveConfig(directory)
-    //}
+    override fun save(directory: File) {
+        saveCounter(directory)
+        saveConfig(directory)
+    }
 
-    //private fun saveCounter(directory: File) {
-    //    val counterFile = buildCounterFileName(directory)
-    //
-    //    CounterIO.writeCounter(counter, counterFile)
-    //}
+    private fun saveCounter(directory: File) {
+        val counterFile = buildCounterFileName(directory)
+
+        CounterIO.writeCounter(counter, counterFile)
+    }
 
     private fun saveConfig(directory: File) {
         val configFile = buildConfigFileName(directory)
@@ -130,8 +132,6 @@ abstract class NGramModel @JvmOverloads constructor(
         writer.flush()
         writer.close()
     }
-
-/*  IO functionality temporally excluded to get rid of jboss-marshalling dependency
 
     override fun load(directory: File): Model {
         val counter = loadCounter(directory)
@@ -148,7 +148,6 @@ abstract class NGramModel @JvmOverloads constructor(
         return CounterIO.readCounter(counterFile) ?: counter
     }
 
- */
 
     protected open fun <ConfigT> loadConfig(directory: File): ConfigT {
         val configFile = buildConfigFileName(directory)

@@ -1,10 +1,14 @@
 package org.jetbrains.slp.modeling.runners
 
+import org.jetbrains.slp.Language
 import org.jetbrains.slp.lexing.Lexer
+import org.jetbrains.slp.lexing.LexerResolver
 import org.jetbrains.slp.lexing.LexerRunner
 import org.jetbrains.slp.modeling.Model
+import org.jetbrains.slp.modeling.mix.InverseMixModel
 import org.jetbrains.slp.modeling.ngram.NGramModel
 import org.jetbrains.slp.translating.Vocabulary
+import org.jetbrains.slp.translating.VocabularyRunner
 import java.io.File
 import java.io.IOException
 import java.io.Reader
@@ -386,10 +390,15 @@ open class ModelRunner(val model: Model, val lexerRunner: LexerRunner, val vocab
         return -1
     }
 
+    fun save(directory: File) {
+        model.save(directory)
+        VocabularyRunner.write(vocabulary, getVocabularyFile(directory))
+    }
+
     companion object {
 
         private val INV_NEG_LOG_2 = -1.0 / ln(2.0)
-        val DEFAULT_NGRAM_ORDER = 6
+        const val DEFAULT_NGRAM_ORDER = 6
 
         var predictionCutoff = 10
 
@@ -400,5 +409,17 @@ open class ModelRunner(val model: Model, val lexerRunner: LexerRunner, val vocab
         fun toMRR(ix: Int): Double {
             return if (ix >= 0) 1.0 / (ix + 1) else 0.0
         }
+
+        fun load(directory: File, language: Language): ModelRunner {
+            return ModelRunner(
+                // TODO("make it work not only for InverseMix")
+                InverseMixModel.load(directory),
+                LexerResolver.extensionToLexer(language.extensions.first()),
+                VocabularyRunner.read(getVocabularyFile(directory))
+            )
+        }
+
+        private fun getVocabularyFile(directory: File) =
+            File(directory.path + File.pathSeparator + "vocabulary.tsv")
     }
 }

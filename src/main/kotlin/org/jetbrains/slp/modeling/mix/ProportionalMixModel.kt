@@ -3,6 +3,7 @@ package org.jetbrains.slp.modeling.mix
 import org.jetbrains.slp.modeling.Model
 import org.jetbrains.slp.modeling.dynamic.CacheModel
 import org.jetbrains.slp.modeling.ngram.JMModel
+import java.io.File
 import kotlin.math.max
 
 class ProportionalMixModel(model1: Model = JMModel(), model2: Model = CacheModel()) : MixModel(model1, model2) {
@@ -24,8 +25,6 @@ class ProportionalMixModel(model1: Model = JMModel(), model2: Model = CacheModel
         return Pair(probability, confidence)
     }
 
-/*  IO functionality temporally excluded to get rid of jboss-marshalling dependency
-
     override fun load(directory: File): MixModel {
         val leftModel = left.load(getLeftDirectoryName(directory))
         val rightModel = right.load(getRightDirectoryName(directory))
@@ -38,5 +37,4 @@ class ProportionalMixModel(model1: Model = JMModel(), model2: Model = CacheModel
         fun save(directory: File, model: ProportionalMixModel) = model.save(directory)
     }
 
- */
 }

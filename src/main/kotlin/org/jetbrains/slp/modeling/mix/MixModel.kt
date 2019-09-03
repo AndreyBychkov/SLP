@@ -1,11 +1,10 @@
 package org.jetbrains.slp.modeling.mix
 
+import org.jetbrains.slp.modeling.Model
 import java.io.File
-import java.util.HashMap
+import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.IntStream
-
-import org.jetbrains.slp.modeling.Model
 
 
 abstract class MixModel(var left: Model, var right: Model) : Model {
@@ -222,8 +221,6 @@ abstract class MixModel(var left: Model, var right: Model) : Model {
         return this.javaClass.simpleName + "[" + left.toString() + ", " + right.toString() + "]"
     }
 
-/*  IO functionality temporally excluded to get rid of jboss-marshalling dependency
-
     override fun save(directory: File) {
         getLeftDirectoryName(directory).apply {
             mkdir()
@@ -242,7 +239,6 @@ abstract class MixModel(var left: Model, var right: Model) : Model {
 
         return standard(leftModel, rightModel)
     }
-*/
 
     protected fun getLeftDirectoryName(directory: File) =
         File("${directory.absolutePath}${File.separator}left")

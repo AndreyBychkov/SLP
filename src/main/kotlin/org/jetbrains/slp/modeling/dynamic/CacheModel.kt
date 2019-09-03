@@ -83,9 +83,19 @@ class CacheModel(private var model: Model = NGramModel.standard(), private val c
         return javaClass.simpleName
     }
 
+    override fun save(directory: File) {
+        model.save(directory)
+    }
+
+    override fun load(directory: File): Model {
+        return CacheModel(model.load(directory), capacity)
+    }
+
 
     companion object {
-
         const val DEFAULT_CAPACITY = 5000
+
+        fun save(directory: File, model: CacheModel) = model.save(directory)
+        fun load(directory: File) = CacheModel().load(directory)
     }
 }

@@ -3,6 +3,7 @@ package org.jetbrains.slp.modeling.mix
 import org.jetbrains.slp.modeling.Model
 import org.jetbrains.slp.modeling.dynamic.CacheModel
 import org.jetbrains.slp.modeling.ngram.JMModel
+import java.io.File
 import kotlin.math.max
 
 class InverseMixModel
@@ -34,7 +35,6 @@ class InverseMixModel
 
         return Pair(probability, confidence)
     }
-/*  IO functionality temporally excluded to get rid of jboss-marshalling dependency
 
     override fun load(directory: File): MixModel {
         val leftModel = left.load(getLeftDirectoryName(directory))
@@ -48,5 +48,4 @@ class InverseMixModel
         fun save(directory: File, model: InverseMixModel) = model.save(directory)
     }
 
- */
 }

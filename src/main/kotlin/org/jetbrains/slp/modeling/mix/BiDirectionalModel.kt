@@ -112,7 +112,6 @@ class BiDirectionalModel : MixModel {
 
         return Pair(probability, confidence)
     }
-/*  IO functionality temporally excluded to get rid of jboss-marshalling dependency
 
     override fun load(directory: File): MixModel {
         val leftModel = left.load(getLeftDirectoryName(directory))
@@ -125,5 +124,5 @@ class BiDirectionalModel : MixModel {
         fun load(directory: File) = BiDirectionalModel().load(directory)
         fun save(directory: File, model: BiDirectionalModel) = model.save(directory)
     }
- */
+
 }

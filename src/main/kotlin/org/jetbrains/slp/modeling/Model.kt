@@ -171,12 +171,9 @@ interface Model {
      */
     fun predictToken(input: List<Int>, index: Int): Map<Int, Pair<Double, Double>>
 
-/*  IO functionality temporally excluded to get rid of jboss-marshalling dependency
-
     fun save(directory: File)
 
     fun load(directory: File): Model
 
- */
 
 }

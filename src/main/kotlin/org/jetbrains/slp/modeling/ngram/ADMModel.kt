@@ -2,6 +2,7 @@ package org.jetbrains.slp.modeling.ngram
 
 import org.jetbrains.slp.counting.Counter
 import org.jetbrains.slp.counting.trie.MapTrieCounter
+import java.io.File
 import kotlin.math.max
 import kotlin.math.min
 
@@ -34,13 +35,9 @@ class ADMModel(order: Int = 6, counter: Counter = MapTrieCounter()) : NGramModel
 
     override val config = Config(order, "${this::class.java}")
 
-
-/*  IO functionality temporally excluded to get rid of jboss-marshalling dependency
-
     companion object {
         fun load(directory: File) = ADMModel().load(directory)
         fun save(directory: File, model: ADMModel) = model.save(directory)
     }
 
- */
 }

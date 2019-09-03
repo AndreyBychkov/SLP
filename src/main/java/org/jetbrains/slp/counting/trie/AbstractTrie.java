@@ -16,7 +16,7 @@ public abstract class AbstractTrie implements Counter {
 
 	
 	public static int COUNT_OF_COUNTS_CUTOFF = 3;
-	public volatile static int[][] nCounts = new int[ModelRunner.Companion.getDEFAULT_NGRAM_ORDER()][4];
+	public volatile static int[][] nCounts = new int[ModelRunner.DEFAULT_NGRAM_ORDER][4];
 	
 	int[] counts;
 
@@ -305,7 +305,7 @@ public abstract class AbstractTrie implements Counter {
 
 	private static void updateNCounts(int n, int count, int adj) {
 		if (n == 0) return;
-		if (n > ModelRunner.Companion.getDEFAULT_NGRAM_ORDER()) return;
+		if (n > ModelRunner.DEFAULT_NGRAM_ORDER) return;
 		int[] toUpdate = nCounts[n - 1];
 		int currIndex = Math.min(count, toUpdate.length);
 		int prevIndex = Math.min(count - adj, toUpdate.length);

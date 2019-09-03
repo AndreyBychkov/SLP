@@ -2,6 +2,7 @@ package org.jetbrains.slp.modeling.ngram
 
 import org.jetbrains.slp.counting.Counter
 import org.jetbrains.slp.counting.trie.MapTrieCounter
+import java.io.File
 
 class WBModel(order: Int = 6, counter: Counter = MapTrieCounter()) : NGramModel(order, counter) {
 
@@ -21,12 +22,9 @@ class WBModel(order: Int = 6, counter: Counter = MapTrieCounter()) : NGramModel(
 
     override val config = Config(order, "${this::class.java}")
 
-/*  IO functionality temporally excluded to get rid of jboss-marshalling dependency
-
     companion object {
         fun load(directory: File) = WBModel().load(directory)
         fun save(directory: File, model: WBModel) = model.save(directory)
     }
 
- */
 }
