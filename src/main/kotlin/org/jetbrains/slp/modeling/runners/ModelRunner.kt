@@ -1,8 +1,12 @@
 package org.jetbrains.slp.modeling.runners
 
+import org.jetbrains.slp.counting.giga.GigaCounter
 import org.jetbrains.slp.lexing.Lexer
 import org.jetbrains.slp.lexing.LexerRunner
 import org.jetbrains.slp.modeling.Model
+import org.jetbrains.slp.modeling.dynamic.CacheModel
+import org.jetbrains.slp.modeling.mix.MixModel
+import org.jetbrains.slp.modeling.ngram.JMModel
 import org.jetbrains.slp.modeling.ngram.NGramModel
 import org.jetbrains.slp.translating.Vocabulary
 import org.jetbrains.slp.translating.VocabularyRunner
@@ -27,7 +31,7 @@ import kotlin.streams.asStream
  *
  * @author Vincent Hellendoorn
  */
-open class ModelRunner(val model: Model, val lexerRunner: LexerRunner, val vocabulary: Vocabulary = Vocabulary()) {
+open class ModelRunner(val model: Model = getDefaultModel(), val lexerRunner: LexerRunner, val vocabulary: Vocabulary = Vocabulary()) {
 
     var selfTesting = false
 
@@ -405,6 +409,12 @@ open class ModelRunner(val model: Model, val lexerRunner: LexerRunner, val vocab
 
         fun toMRR(ix: Int): Double {
             return if (ix >= 0) 1.0 / (ix + 1) else 0.0
+        }
+
+        private fun getDefaultModel(): Model {
+            var model: Model = JMModel(counter = GigaCounter())
+            model = MixModel.standard(model, CacheModel())
+            return model
         }
     }
 }
