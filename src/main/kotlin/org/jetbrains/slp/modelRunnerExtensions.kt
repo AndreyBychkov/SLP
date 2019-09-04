@@ -6,22 +6,6 @@ import java.io.File
 import java.util.*
 
 
-fun ModelRunner.train(path: File) {
-    when {
-        path.isDirectory -> learnDirectory(path)
-        path.isFile -> learnFile(path)
-        else -> throw IllegalArgumentException("Argument must be directory of file")
-    }
-}
-
-fun ModelRunner.forget(file: File) {
-    when {
-        file.isDirectory -> forgetDirectory(file)
-        file.isFile -> forgetFile(file)
-        else -> throw IllegalArgumentException("Argument must be directory of file")
-    }
-}
-
 fun ModelRunner.getStatisticsOnDirectory(directoryPath: File): DoubleSummaryStatistics {
     val modeledFiles = modelDirectory(directoryPath)
 
@@ -57,13 +41,19 @@ fun ModelRunner.getTopSuggestions(code: String, maxNumberOfSuggestions: Int = 5)
         .map { it.first }
 }
 
-fun ModelRunner.getTopSuggestionsWithProbabilities(code: String, maxNumberOfSuggestions: Int = 5): List<Pair<String, Double>> {
+fun ModelRunner.getTopSuggestionsWithProbabilities(
+    code: String,
+    maxNumberOfSuggestions: Int = 5
+): List<Pair<String, Double>> {
     val tokens = lexerRunner.lexLine(code).toList()
 
     return getTopSuggestionsWithProbabilities(tokens, maxNumberOfSuggestions)
 }
 
-fun ModelRunner.getTopSuggestionsWithProbabilities(tokens: List<String>, maxNumberOfSuggestions: Int = 5): List<Pair<String, Double>> {
+fun ModelRunner.getTopSuggestionsWithProbabilities(
+    tokens: List<String>,
+    maxNumberOfSuggestions: Int = 5
+): List<Pair<String, Double>> {
     val queryIndices = vocabulary.toIndices(tokens).filterNotNull()
     val predictions = model.predictToken(queryIndices, tokens.size - 1)
         .toList()
@@ -114,7 +104,7 @@ tailrec fun ModelRunner.expandCode(code: String, iterNum: Int = 100): String {
     return expandCode("$code $currentSuggestion", iterNum - 1)
 }
 
-private fun <T> List <T>.getExpandingMatches(index: Int): List<List<T>> {
+private fun <T> List<T>.getExpandingMatches(index: Int): List<List<T>> {
     if (index > size)
         return listOf()
 

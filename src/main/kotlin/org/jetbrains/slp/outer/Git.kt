@@ -1,6 +1,5 @@
 package org.jetbrains.slp.outer
 
-import org.jetbrains.slp.train
 import org.eclipse.jgit.api.Git as GitAPI
 import org.jetbrains.slp.modeling.runners.ModelRunner
 import java.io.File

@@ -5,17 +5,17 @@ import org.jetbrains.slp.lexing.LexerResolver
 import org.jetbrains.slp.modeling.runners.LocalGlobalModelRunner
 import org.jetbrains.slp.modeling.runners.ModelRunner
 
-object ModelManager {
-    private val modelsHolder = mutableMapOf<String, ModelRunner>()
+class ModelManager {
+    private val modelsHolder = mutableMapOf<String, LocalGlobalModelRunner>()
 
-    fun getModelForExtension(extension: String): ModelRunner {
+    fun getModelForExtension(extension: String): LocalGlobalModelRunner {
         if (extension !in modelsHolder.keys)
             registerModel(extension)
 
         return modelsHolder[extension]!!
     }
 
-    fun getModelForLanguage(language: Language): ModelRunner {
+    fun getModelForLanguage(language: Language): LocalGlobalModelRunner {
         if (language.extensions.none { it in modelsHolder.keys })
             language.extensions.forEach { registerModel(it) }
 
