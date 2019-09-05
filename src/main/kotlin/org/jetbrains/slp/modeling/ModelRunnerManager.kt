@@ -8,6 +8,9 @@ import java.io.File
 class ModelRunnerManager {
     private val modelsHolder = mutableMapOf<String, LocalGlobalModelRunner>()
 
+    fun contains(extension: String) =
+        modelsHolder.keys.contains(extension)
+
     fun getModelRunner(extension: String): LocalGlobalModelRunner {
         if (extension !in modelsHolder.keys)
             registerModelRunner(extension)
