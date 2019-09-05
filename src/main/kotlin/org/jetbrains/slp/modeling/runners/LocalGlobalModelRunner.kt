@@ -2,7 +2,7 @@ package org.jetbrains.slp.modeling.runners
 
 import org.jetbrains.slp.Language
 import org.jetbrains.slp.counting.giga.GigaCounter
-import org.jetbrains.slp.lexing.LexerResolver
+import org.jetbrains.slp.lexing.LexerRunnerFactory
 import org.jetbrains.slp.lexing.LexerRunner
 import org.jetbrains.slp.modeling.Model
 import org.jetbrains.slp.modeling.mix.MixModel
@@ -47,7 +47,7 @@ class LocalGlobalModelRunner(localModel: Model = getDefaultLocalModel(),
             return LocalGlobalModelRunner(
                 getDefaultLocalModel(),
                 JMModel.load(directory),
-                LexerResolver.extensionToLexer(language.extensions.first()),
+                LexerRunnerFactory.extensionToLexerRunner(language.extensions.first()),
                 VocabularyRunner.read(directory)
             )
         }

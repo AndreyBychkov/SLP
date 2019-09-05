@@ -5,11 +5,19 @@ import org.jetbrains.slp.filters.DefaultCodeFilter
 import org.jetbrains.slp.filters.lang.JavaCodeFilter
 import org.jetbrains.slp.filters.lang.PythonCodeFilter
 
-object LexerResolver {
+object LexerRunnerFactory {
 
-    fun extensionToLexer(extension: String)  = when(extension) {
-        in Language.JAVA.extensions -> makeLexer(Language.JAVA, NaiveCodeLexer())
-        in Language.PYTHON.extensions -> makeLexer(Language.PYTHON, NaiveCodeLexer())
+    fun extensionToLexerRunner(extension: String)  = when(extension) {
+        in Language.JAVA.extensions -> makeLexerRunner(Language.JAVA, NaiveCodeLexer())
+        in Language.PYTHON.extensions -> makeLexerRunner(Language.PYTHON, NaiveCodeLexer())
+        else -> LexerRunner(NaiveCodeLexer(), true).apply {
+            setSentenceMarkers(true)
+        }
+    }
+
+    fun languageToLexerRunner(language: Language) = when(language) {
+        Language.JAVA -> makeLexerRunner(Language.JAVA, NaiveCodeLexer())
+        Language.PYTHON -> makeLexerRunner(Language.PYTHON, NaiveCodeLexer())
         else -> LexerRunner(NaiveCodeLexer(), true).apply {
             setSentenceMarkers(true)
         }
@@ -21,7 +29,7 @@ object LexerResolver {
         Language.UNKNOWN -> DefaultCodeFilter
     }
 
-    private fun makeLexer(language: Language, lexer: Lexer) =
+    private fun makeLexerRunner(language: Language, lexer: Lexer) =
         LexerRunner(lexer, true, languageToFilter(language)).apply {
             regex = (extensionsToRegex(language.extensions))
             setSentenceMarkers(true)
