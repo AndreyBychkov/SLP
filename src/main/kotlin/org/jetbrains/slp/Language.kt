@@ -12,4 +12,14 @@ enum class Language {
     };
 
     abstract val extensions: List<String>
+
+    companion object {
+        fun getLanguage(extension: String): Language {
+            for (language in values()) {
+                if (extension in language.extensions)
+                    return language
+            }
+            return UNKNOWN
+        }
+    }
 }

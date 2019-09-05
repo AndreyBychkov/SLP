@@ -7,7 +7,7 @@ import org.jetbrains.slp.filters.lang.PythonCodeFilter
 
 object LexerRunnerFactory {
 
-    fun extensionToLexerRunner(extension: String)  = when(extension) {
+    fun getLexerRunner(extension: String)  = when(extension) {
         in Language.JAVA.extensions -> makeLexerRunner(Language.JAVA, NaiveCodeLexer())
         in Language.PYTHON.extensions -> makeLexerRunner(Language.PYTHON, NaiveCodeLexer())
         else -> LexerRunner(NaiveCodeLexer(), true).apply {
@@ -15,7 +15,7 @@ object LexerRunnerFactory {
         }
     }
 
-    fun languageToLexerRunner(language: Language) = when(language) {
+    fun getLexerRunner(language: Language) = when(language) {
         Language.JAVA -> makeLexerRunner(Language.JAVA, NaiveCodeLexer())
         Language.PYTHON -> makeLexerRunner(Language.PYTHON, NaiveCodeLexer())
         else -> LexerRunner(NaiveCodeLexer(), true).apply {

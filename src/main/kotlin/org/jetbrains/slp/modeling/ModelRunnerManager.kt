@@ -3,6 +3,7 @@ package org.jetbrains.slp.modeling
 import org.jetbrains.slp.Language
 import org.jetbrains.slp.lexing.LexerRunnerFactory
 import org.jetbrains.slp.modeling.runners.LocalGlobalModelRunner
+import java.io.File
 
 class ModelRunnerManager {
     private val modelsHolder = mutableMapOf<String, LocalGlobalModelRunner>()
@@ -15,22 +16,21 @@ class ModelRunnerManager {
     }
 
     fun getModelRunner(language: Language): LocalGlobalModelRunner {
-        if (language.extensions.none { it in modelsHolder.keys })
-            language.extensions.forEach { registerModelRunner(it) }
+        registerModelRunner(language)
 
         return modelsHolder[language.extensions.first()]!!
     }
 
     fun registerModelRunner(extension: String) {
-        val modelRunner = LocalGlobalModelRunner(lexerRunner = LexerRunnerFactory.extensionToLexerRunner(extension))
+        val modelRunner = LocalGlobalModelRunner(lexerRunner = LexerRunnerFactory.getLexerRunner(extension))
         registerModelRunner(modelRunner, extension)
     }
 
     fun registerModelRunner(language: Language) {
-        val unusedExtensions = language.extensions.intersect(modelsHolder.keys)
-        val modelKey = modelsHolder.keys.intersect(language.extensions).first()
+        val unusedExtensions = language.extensions.minus(modelsHolder.keys)
+        val modelKey = modelsHolder.keys.intersect(language.extensions).firstOrNull()
         val modelRunner =
-            modelsHolder[modelKey] ?: LocalGlobalModelRunner(lexerRunner = LexerRunnerFactory.languageToLexerRunner(language))
+            modelsHolder[modelKey] ?: LocalGlobalModelRunner(lexerRunner = LexerRunnerFactory.getLexerRunner(language))
 
         unusedExtensions.forEach {
             registerModelRunner(modelRunner, it)
@@ -38,7 +38,7 @@ class ModelRunnerManager {
     }
 
     fun registerModelRunner(modelRunner: LocalGlobalModelRunner, language: Language) {
-        val unusedExtensions = language.extensions.intersect(modelsHolder.keys)
+        val unusedExtensions = language.extensions.minus(modelsHolder.keys)
         unusedExtensions.forEach {
             registerModelRunner(modelRunner, it)
         }
@@ -47,5 +47,29 @@ class ModelRunnerManager {
     fun registerModelRunner(modelRunner: LocalGlobalModelRunner, extension: String) {
         modelsHolder[extension] = modelRunner
     }
+
+    fun save(directory: File) {
+        modelsHolder
+            .mapKeys { entry -> Language.getLanguage(entry.key).toString() }
+            .forEach {
+                File(makePath(directory, it.key)).apply {
+                    mkdir()
+                    it.value.save(this)
+                }
+            }
+    }
+
+    fun load(directory: File) {
+        modelsHolder.clear()
+        val subdirectories = directory.listFiles(File::isDirectory)!!.filterNotNull()
+        val languages = subdirectories.map { Language.valueOf(it.name) }
+
+        for ((subdir, language) in subdirectories.zip(languages)) {
+            registerModelRunner(LocalGlobalModelRunner.load(subdir, language), language)
+        }
+    }
+
+    fun makePath(directory: File, subdirectoryName: String) =
+        directory.path + File.separator + subdirectoryName
 
 }

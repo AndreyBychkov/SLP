@@ -47,7 +47,16 @@ class LocalGlobalModelRunner(localModel: Model = getDefaultLocalModel(),
             return LocalGlobalModelRunner(
                 getDefaultLocalModel(),
                 JMModel.load(directory),
-                LexerRunnerFactory.extensionToLexerRunner(language.extensions.first()),
+                LexerRunnerFactory.getLexerRunner(language),
+                VocabularyRunner.read(directory)
+            )
+        }
+
+        fun load(directory: File, extension: String): LocalGlobalModelRunner {
+            return LocalGlobalModelRunner(
+                getDefaultLocalModel(),
+                JMModel.load(directory),
+                LexerRunnerFactory.getLexerRunner(extension),
                 VocabularyRunner.read(directory)
             )
         }

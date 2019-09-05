@@ -123,5 +123,5 @@ object VocabularyRunner {
     }
 
     private fun getVocabularyFile(directory: File) =
-        File(directory.path + File.pathSeparator + "vocabulary.tsv")
+        File(directory.path + File.separator + "vocabulary.tsv")
 }
