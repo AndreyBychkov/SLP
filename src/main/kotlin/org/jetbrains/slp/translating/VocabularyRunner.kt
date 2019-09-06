@@ -1,14 +1,9 @@
 package org.jetbrains.slp.translating
 
-import java.io.BufferedWriter
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.OutputStreamWriter
-import java.nio.charset.StandardCharsets
-
 import org.jetbrains.slp.io.Reader
 import org.jetbrains.slp.lexing.LexerRunner
+import java.io.*
+import java.nio.charset.StandardCharsets
 import kotlin.math.roundToLong
 
 object VocabularyRunner {
@@ -86,8 +81,11 @@ object VocabularyRunner {
         val vocabulary = Vocabulary()
 
         Reader.readLines(file)
-            .map { it.split("\t".toRegex(), 3) }
-            .filter { it[0].toInt() >= cutOff }
+            .map { it.split("\t") }
+            .filter {
+                try { it[0].toInt() >= cutOff }
+                catch (exception: Exception) { false }
+            }
             .forEach { split ->
                 val count = split[0].toInt()
                 val index = split[1].toInt()
@@ -95,7 +93,8 @@ object VocabularyRunner {
                     println("VocabularyRunner.read(): non-consecutive indices while reading vocabulary!")
                 }
                 val token = split[2]
-                vocabulary.store(token, count)
+                if (token.isNotEmpty())
+                    vocabulary.store(token, count)
             }
 
         return vocabulary
@@ -113,7 +112,8 @@ object VocabularyRunner {
                 for (i in 0 until vocabulary.size()) {
                     val count = vocabulary.counts[i]
                     val word = vocabulary.words[i]
-                    fw.append(count.toString() + "\t" + i + "\t" + word + "\n")
+                    if (word.isNotEmpty())
+                        fw.append(count.toString() + "\t" + i + "\t" + word + "\n")
                 }
             }
         } catch (e: IOException) {
