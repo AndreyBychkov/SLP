@@ -1,7 +1,10 @@
 package org.jetbrains.slp.counting.io;
 
 import org.jboss.marshalling.*;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.slp.counting.Counter;
+import org.jetbrains.slp.counting.giga.*;
+import org.jetbrains.slp.counting.trie.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,7 +19,8 @@ public class CounterIO {
     	configuration.setVersion(3);
     }
     
-	public static Counter readCounter(File file) {
+	@Nullable
+    public static Counter readCounter(File file) {
 		System.out.println("Reading counter from: " + file);
         try (FileInputStream is = new FileInputStream(file)) {
         	final Unmarshaller unmarshaller = marshallerFactory.createUnmarshaller(configuration);

@@ -2,6 +2,7 @@ package org.jetbrains.slp.modeling.runners
 
 import org.jetbrains.slp.Language
 import org.jetbrains.slp.counting.giga.GigaCounter
+import org.jetbrains.slp.counting.trie.ArrayTrieCounter
 import org.jetbrains.slp.lexing.LexerRunnerFactory
 import org.jetbrains.slp.lexing.LexerRunner
 import org.jetbrains.slp.modeling.Model
@@ -66,7 +67,7 @@ class LocalGlobalModelRunner(localModel: Model = getDefaultLocalModel(),
         }
 
         private fun getDefaultGlobalModel(): Model {
-            return JMModel(6, counter = GigaCounter())
+            return JMModel(6, counter = ArrayTrieCounter())
         }
     }
 }
