@@ -51,6 +51,10 @@ abstract class NGramModel @JvmOverloads constructor(
         }
     }
 
+    fun clearCounter() {
+        counter = counter.javaClass.newInstance()
+    }
+
     override fun modelAtIndex(input: List<Int>, index: Int): Pair<Double, Double> {
         val sequence = NGramSequencer.sequenceAt(input, index, order)
         var probability = 0.0

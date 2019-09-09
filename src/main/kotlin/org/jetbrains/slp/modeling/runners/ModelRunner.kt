@@ -57,13 +57,17 @@ open class ModelRunner(val model: Model = getDefaultModel(), val lexerRunner: Le
 
     fun train(file: File, selectedModel: Model = model) {
         when {
-            file.isDirectory -> learnDirectory(file)
-            file.isFile -> learnFile(file)
+            file.isDirectory -> learnDirectory(file, selectedModel)
+            file.isFile -> learnFile(file, selectedModel)
             else -> throw IllegalArgumentException("Argument must be directory of file")
         }
     }
 
-    fun learnDirectory(file: File, selectedModel: Model = model) {
+    fun train(text: String, selectedModel: Model = model) {
+        learnContent(text, selectedModel)
+    }
+
+    protected fun learnDirectory(file: File, selectedModel: Model = model) {
         learnStats = longArrayOf(0, -System.currentTimeMillis())
         lexerRunner.lexDirectory(file)!!
             .forEach { p ->
@@ -78,7 +82,7 @@ open class ModelRunner(val model: Model = getDefaultModel(), val lexerRunner: Le
         }
     }
 
-    fun learnFile(f: File, selectedModel: Model = model) {
+    protected fun learnFile(f: File, selectedModel: Model = model) {
         if (!lexerRunner.willLexFile(f))
             return
 
@@ -86,7 +90,7 @@ open class ModelRunner(val model: Model = getDefaultModel(), val lexerRunner: Le
         learnTokens(lexerRunner.lexFile(f), selectedModel)
     }
 
-    fun learnContent(content: String, selectedModel: Model = model) {
+    protected fun learnContent(content: String, selectedModel: Model = model) {
         learnTokens(lexerRunner.lexText(content), selectedModel)
     }
 
@@ -124,7 +128,7 @@ open class ModelRunner(val model: Model = getDefaultModel(), val lexerRunner: Le
         }
     }
 
-    fun forgetDirectory(file: File, selectedModel: Model = model) {
+    protected fun forgetDirectory(file: File, selectedModel: Model = model) {
         try {
             Files.walk(file.toPath())
                 .map { it.toFile() }
@@ -136,7 +140,7 @@ open class ModelRunner(val model: Model = getDefaultModel(), val lexerRunner: Le
 
     }
 
-    fun forgetFile(f: File, selectedModel: Model = model) {
+    protected fun forgetFile(f: File, selectedModel: Model = model) {
         if (!lexerRunner.willLexFile(f))
             return
         selectedModel.notify(f)

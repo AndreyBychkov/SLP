@@ -8,6 +8,7 @@ import org.jetbrains.slp.lexing.LexerRunner
 import org.jetbrains.slp.modeling.Model
 import org.jetbrains.slp.modeling.mix.MixModel
 import org.jetbrains.slp.modeling.ngram.JMModel
+import org.jetbrains.slp.modeling.ngram.NGramModel
 import org.jetbrains.slp.translating.Vocabulary
 import org.jetbrains.slp.translating.VocabularyRunner
 import java.io.File
@@ -26,6 +27,10 @@ class LocalGlobalModelRunner(localModel: Model = getDefaultLocalModel(),
         train(file, localModel)
     }
 
+    fun trainLocal(text: String) {
+        learnContent(text, localModel)
+    }
+
     fun trainGlobal(file: File) {
         train(file, globalModel)
     }
@@ -36,6 +41,16 @@ class LocalGlobalModelRunner(localModel: Model = getDefaultLocalModel(),
 
     fun forgetGlobal(file: File) {
         forget(file, globalModel)
+    }
+
+    fun clearLocal() {
+        try {
+            (localModel as NGramModel).clearCounter()
+        } catch (e: ClassCastException) {
+            println("Can not cast local model to NgramModel. Make sure that local model is Ngram based")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun save(directory: File) {
