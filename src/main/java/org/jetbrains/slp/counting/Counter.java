@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * Interface for counter implementations that can be used by count-based models,
- * most notably the {@link ArrayTrieCounter} which provides a rather efficient implementation
+ * most notably the {@link org.jetbrains.slp.counting.trie.ArrayTrieCounter} which provides a rather efficient implementation
  * that is currently used by the {@link NGramModel}s.
  * 
  * @author Vincent Hellendoorn

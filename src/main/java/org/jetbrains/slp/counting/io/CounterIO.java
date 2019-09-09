@@ -1,51 +1,39 @@
 package org.jetbrains.slp.counting.io;
 
-import org.jboss.marshalling.*;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.slp.counting.Counter;
-import org.jetbrains.slp.counting.giga.*;
-import org.jetbrains.slp.counting.trie.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 public class CounterIO {
-
-	private static final MarshallerFactory marshallerFactory = Marshalling.getProvidedMarshallerFactory("river");
-	private static final MarshallingConfiguration configuration = new MarshallingConfiguration();
-    static {
-    	configuration.setVersion(3);
-    }
     
 	@Nullable
     public static Counter readCounter(File file) {
-		System.out.println("Reading counter from: " + file);
-        try (FileInputStream is = new FileInputStream(file)) {
-        	final Unmarshaller unmarshaller = marshallerFactory.createUnmarshaller(configuration);
-            unmarshaller.start(Marshalling.createByteInput(is));
-            Counter counter = (Counter) unmarshaller.readObject();
-            unmarshaller.finish();
-            is.close();
+		try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            Counter counter = (Counter) objectInputStream.readObject();
+            objectInputStream.close();
+            fileInputStream.close();
+
             return counter;
-        } catch (IOException | ClassNotFoundException e) {
-            System.err.print("Un-marshalling failed: ");
-            e.printStackTrace();
+        } catch (Exception e) {
+		    e.printStackTrace();
+		    return null;
         }
-		return null;
 	}
 
 	public static void writeCounter(Counter counter, File file) {
-		System.out.println("Writing counter to: " + file);
-		try (FileOutputStream os = new FileOutputStream(file)) {
-        	final Marshaller marshaller = marshallerFactory.createMarshaller(configuration);
-            marshaller.start(Marshalling.createByteOutput(os));
-            marshaller.writeObject(counter);
-            marshaller.finish();
-        } catch (IOException e) {
-            System.err.print("Marshalling failed: ");
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+
+            objectOutputStream.writeObject(counter);
+
+            objectOutputStream.close();
+            fileOutputStream.close();
+        } catch (Exception e) {
             e.printStackTrace();
         }
-	}
+    }
 }

@@ -71,8 +71,13 @@ fun ModelRunner.getNGramProbability(tokens: List<String>): Double {
     return probability
 }
 
-fun ModelRunner.getExpandedSuggestion(code: String) =
-    getAllExpandingSuggestions(code, 1).first()
+fun ModelRunner.getExpandedSuggestion(code: String): String {
+    val suggestions = getAllExpandingSuggestions(code, 1)
+    return if (suggestions.isNotEmpty())
+        suggestions.first()
+    else
+        ""
+}
 
 fun ModelRunner.getAllExpandingSuggestions(code: String, limit: Int = 3): List<String> {
     fun String.getCodeBetweenCodeDelimiters() = lexerRunner.filter.getCodeBetweenDelimiters(this)

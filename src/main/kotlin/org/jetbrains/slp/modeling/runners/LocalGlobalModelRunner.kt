@@ -67,7 +67,7 @@ class LocalGlobalModelRunner(localModel: Model = getDefaultLocalModel(),
         }
 
         private fun getDefaultGlobalModel(): Model {
-            return JMModel(6, counter = ArrayTrieCounter())
+            return JMModel(6, counter = GigaCounter())
         }
     }
 }

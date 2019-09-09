@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
  * Helpful especially when needing to org.jetbrains.slp.train once on a very large corpus with only none or 'normal-sized' updates afterwards
  * (though mixing is quite fine).<br /><br />
  * 
- * Very large corpora cause slow-downs in both training and testing for the conventional {@link ArrayTrieCounter}
+ * Very large corpora cause slow-downs in both training and testing for the conventional {@link org.jetbrains.slp.counting.trie.ArrayTrieCounter}
  * due to garbage collection and binary-search lookup.
  * The {@link GigaCounter} solves this in three ways:
  * <ul>
@@ -21,7 +21,7 @@ import java.util.stream.IntStream;
  * <li>It serializes batches of counted files into a single byte array at org.jetbrains.slp.train-time (dramatically reducing gc overhead)
  * <li>Finally, when done training it resolves the serialized counters in parallel into a {@link VirtualCounter} and defers all future calls to that object.
  * </ul>
- * The {@link VirtualCounter} in turn also has mechanisms to deal better with parallel updating and lookup than the {@link ArrayTrieCounter}.
+ * The {@link VirtualCounter} in turn also has mechanisms to deal better with parallel updating and lookup than the {@link org.jetbrains.slp.counting.trie.ArrayTrieCounter}.
  * 
  * @author Vincent Hellendoorn
  *
