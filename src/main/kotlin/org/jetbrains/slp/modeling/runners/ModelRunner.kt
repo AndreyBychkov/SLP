@@ -120,7 +120,7 @@ open class ModelRunner(val model: Model = getDefaultModel(), val lexerRunner: Le
         }
     }
 
-    fun forget(file: File, selectedModel: Model) {
+    fun forget(file: File, selectedModel: Model = model) {
         when {
             file.isDirectory -> forgetDirectory(file, selectedModel)
             file.isFile -> forgetFile(file, selectedModel)
@@ -128,6 +128,9 @@ open class ModelRunner(val model: Model = getDefaultModel(), val lexerRunner: Le
         }
     }
 
+    fun forget(text: String, selectedModel: Model = model) {
+        forgetContent(text, selectedModel)
+    }
     protected fun forgetDirectory(file: File, selectedModel: Model = model) {
         try {
             Files.walk(file.toPath())
@@ -147,7 +150,7 @@ open class ModelRunner(val model: Model = getDefaultModel(), val lexerRunner: Le
         forgetTokens(lexerRunner.lexFile(f), selectedModel)
     }
 
-    fun forgetContent(content: String, selectedModel: Model) {
+    fun forgetContent(content: String, selectedModel: Model = model) {
         forgetTokens(lexerRunner.lexText(content), selectedModel)
     }
 

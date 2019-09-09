@@ -59,7 +59,7 @@ class NestedModel @JvmOverloads constructor(
         if (testBaseModel == null) {
             testBaseModel = newModel()
             baseModelRunner = newModelRunner(testBaseModel)
-            baseModelRunner.learnDirectory(testRoot)
+            baseModelRunner.train(testRoot)
         } else {
             baseModelRunner = newModelRunner(testBaseModel)
         }
@@ -135,7 +135,7 @@ class NestedModel @JvmOverloads constructor(
         var pos = 1
         while (pos < files.size) {
             if (pos >= lineage.size || files[pos] != lineage[pos]) {
-                modelRunners[pos - 1].learnDirectory(files[pos])
+                modelRunners[pos - 1].train(files[pos])
                 files.subList(pos, files.size).clear()
                 modelRunners.subList(pos, modelRunners.size).clear()
                 break
@@ -147,11 +147,11 @@ class NestedModel @JvmOverloads constructor(
             val model = newModel()
             files.add(file)
             modelRunners.add(newModelRunner(model))
-            modelRunners[modelRunners.size - 1].learnDirectory(file)
-            modelRunners[modelRunners.size - 2].forgetDirectory(file)
+            modelRunners[modelRunners.size - 1].train(file)
+            modelRunners[modelRunners.size - 2].forget(file)
         }
         files.add(next)
-        modelRunners[modelRunners.size - 1].forgetDirectory(next)
+        modelRunners[modelRunners.size - 1].forget(next)
         mix = MixModel.standard(global, modelRunners[0].model)
         for (i in 1 until modelRunners.size) {
             mix = MixModel.standard(mix!!, modelRunners[i].model)
