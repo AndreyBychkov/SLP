@@ -46,7 +46,7 @@ class NaiveCodeLexer : Lexer {
         |/
         |!
         # Other
-        |#
+        |\#
         |&
         """, RegexOption.COMMENTS)
 
