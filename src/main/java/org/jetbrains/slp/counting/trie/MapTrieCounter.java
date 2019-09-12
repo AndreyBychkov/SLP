@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 public class MapTrieCounter extends AbstractTrie {
 	/**
 	 * 'counts' contains in order: own count, context count (sum of successor's counts),
-	 * no of distinct successors seen once, twice, up to the COCcutoff in Configuration
+	 * no of distinct successors seen once, twice, up to the COCoutoff in Configuration
 	 */
 	//private Int2ObjectMap<Object> map;
 	private HashMap<Integer, Object> map;

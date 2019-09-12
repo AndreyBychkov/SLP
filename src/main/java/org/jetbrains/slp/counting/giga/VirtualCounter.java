@@ -21,7 +21,7 @@ import java.util.stream.IntStream;
  * The {@link GigaCounter} is the primary user of this VirtualCounter
  * since it must both deal with high memory usage (and thus GC) and since it 'unpacks' its internal counters in parallel. <br />
  * The choice of {@link MapTrieCounter} internally further boosts counting throughput (and reduces gc) at the expense of (slight) memory increase,
- * since that Trie uses hashmaps instead of binary-sorted arrays internally.<br /><br />
+ * since that Trie uses hash maps instead of binary-sorted arrays internally.<br /><br />
  * 
  * API note: as stated, the current implementation uses a hard-coded Counter type, which is known to synchronize its update method.
  * Future versions may explicitly synchronize counting themselves and allow generic counters to be stored.

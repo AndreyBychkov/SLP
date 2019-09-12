@@ -102,7 +102,7 @@ interface Model {
      * Model each token in input to a pair of probability/confidence (see [.modelToken].
      * <br></br>
      * The default implementation simply invokes [.modelToken] for each index;
-     * can be overriden in favor of batch processing by underlying class if preferable
+     * can be overridden in favor of batch processing by underlying class if preferable
      * (but remember to implement dynamic updating or caches won't work).
      *
      * @param input Lexed and translated input tokens (use `Vocabulary` to translate back if needed)
@@ -134,7 +134,7 @@ interface Model {
      * Give top `N` predictions for each token in input with probability/confidence scores (see [.modelToken].
      * <br></br>
      * The default implementation simply invokes [.predictToken] for each index;
-     * can be overriden in favor of batch processing by underlying class if preferable
+     * can be overridden in favor of batch processing by underlying class if preferable
      * (but remember to implement dynamic updating or caches won't work).
      *
      * @param input Lexed and translated input tokens (use `Vocabulary` to translate back if needed)
