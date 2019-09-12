@@ -27,20 +27,6 @@ object Printer {
         }
     }
 
-    fun printExpandedCodeSamples(
-      modelRunner: ModelRunner,
-      codeSamples: Map<String, String>,
-      maxIter: Int = 40
-    ) {
-        codeSamples.forEach {
-            println()
-            println("${it.key}:".toUpperCase())
-            println(it.value)
-            println("-".repeat(40))
-            println(modelRunner.expandCode(it.value, maxIter))
-        }
-    }
-
     fun printFilteredExpandingSuggestionsOnCodeSamples(
       modelRunner: ModelRunner,
       codeSamples: Map<String, String>
