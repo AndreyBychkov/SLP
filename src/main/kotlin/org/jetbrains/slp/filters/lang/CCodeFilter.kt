@@ -3,12 +3,12 @@ package org.jetbrains.slp.filters.lang
 import org.jetbrains.slp.filters.CodeFilter
 import org.jetbrains.slp.filters.Filters
 
-object JavaCodeFilter : CodeFilter() {
+object CCodeFilter: CodeFilter() {
     override val codeDelimiters = listOf(";", "{", "}")
     override val symbolsToExclude: List<String> = listOf(" ")
 
     init {
-        addFilters(
+        CCodeFilter.addFilters(
             { Filters.dotFilter(it) },
             { Filters.commaFilter(it) },
             { Filters.leftBraceFilter(it) },
@@ -18,6 +18,7 @@ object JavaCodeFilter : CodeFilter() {
             { Filters.leftIncrementDecrementOperatorFilter(it) },
             { Filters.rightIncrementDecrementOperatorFilter(it) },
             { Filters.arrowFilter(it) },
+            { Filters.hashTagFilter(it) },
             { Filters.templateFilter(it) },
             { Filters.vocabularyFilter(it) },
             { it.trim() }

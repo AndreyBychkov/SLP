@@ -23,6 +23,8 @@ class NaiveCodeLexer : Lexer {
         |\+\+
         |--
         |\*\*
+        |\|\|
+        |&&
         |==
         |!=
         |>=
@@ -42,6 +44,7 @@ class NaiveCodeLexer : Lexer {
         |=
         |%
         |/
+        |!
         # Other
         |#
         |&

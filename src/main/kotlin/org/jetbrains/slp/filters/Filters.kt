@@ -35,4 +35,10 @@ object Filters {
 
     fun vocabularyFilter(input: String) =
         input.replace(Vocabulary.beginOfString, "").replace(Vocabulary.endOfString, "")
+
+    fun hashTagFilter(input: String) =
+        Regex("""#\s+(\w+)""").replace(input, "#$1")
+
+    fun templateFilter(input: String) =
+        Regex("""<\s*(\w*)\s*>""").replace(input, "<$1>")
 }

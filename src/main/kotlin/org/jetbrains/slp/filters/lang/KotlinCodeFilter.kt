@@ -18,6 +18,7 @@ object KotlinCodeFilter: CodeFilter() {
             { Filters.leftIncrementDecrementOperatorFilter(it) },
             { Filters.rightIncrementDecrementOperatorFilter(it) },
             { Filters.arrowFilter(it) },
+            { Filters.templateFilter(it) },
             { Filters.vocabularyFilter(it) },
             { it.trim() }
         )

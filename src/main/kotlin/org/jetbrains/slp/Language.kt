@@ -10,6 +10,9 @@ enum class Language {
     KOTLIN {
         override val extensions = listOf("kt", "kts")
     },
+    C {
+        override val extensions = listOf("c", "h")
+    },
     UNKNOWN {
         override val extensions = listOf("")
     };

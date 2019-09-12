@@ -2,6 +2,7 @@ package org.jetbrains.slp.lexing
 
 import org.jetbrains.slp.Language
 import org.jetbrains.slp.filters.DefaultCodeFilter
+import org.jetbrains.slp.filters.lang.CCodeFilter
 import org.jetbrains.slp.filters.lang.JavaCodeFilter
 import org.jetbrains.slp.filters.lang.KotlinCodeFilter
 import org.jetbrains.slp.filters.lang.PythonCodeFilter
@@ -12,6 +13,7 @@ object LexerRunnerFactory {
         in Language.JAVA.extensions -> makeLexerRunner(Language.JAVA, NaiveCodeLexer())
         in Language.PYTHON.extensions -> makeLexerRunner(Language.PYTHON, NaiveCodeLexer())
         in Language.KOTLIN.extensions -> makeLexerRunner(Language.KOTLIN, NaiveCodeLexer())
+        in Language.C.extensions -> makeLexerRunner(Language.C, NaiveCodeLexer())
         else -> LexerRunner(NaiveCodeLexer(), true).apply {
             setSentenceMarkers(true)
         }
@@ -21,7 +23,8 @@ object LexerRunnerFactory {
         Language.JAVA -> makeLexerRunner(Language.JAVA, NaiveCodeLexer())
         Language.PYTHON -> makeLexerRunner(Language.PYTHON, NaiveCodeLexer())
         Language.KOTLIN -> makeLexerRunner(Language.KOTLIN, NaiveCodeLexer())
-        else -> LexerRunner(NaiveCodeLexer(), true).apply {
+        Language.C -> makeLexerRunner(Language.C, NaiveCodeLexer())
+        Language.UNKNOWN -> LexerRunner(NaiveCodeLexer(), true).apply {
             setSentenceMarkers(true)
         }
     }
@@ -30,6 +33,7 @@ object LexerRunnerFactory {
         Language.JAVA -> JavaCodeFilter
         Language.PYTHON -> PythonCodeFilter
         Language.KOTLIN -> KotlinCodeFilter
+        Language.C -> CCodeFilter
         Language.UNKNOWN -> DefaultCodeFilter
     }
 
