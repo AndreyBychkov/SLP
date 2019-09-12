@@ -3,6 +3,7 @@ package org.jetbrains.slp.lexing
 import org.jetbrains.slp.Language
 import org.jetbrains.slp.filters.DefaultCodeFilter
 import org.jetbrains.slp.filters.lang.JavaCodeFilter
+import org.jetbrains.slp.filters.lang.KotlinCodeFilter
 import org.jetbrains.slp.filters.lang.PythonCodeFilter
 
 object LexerRunnerFactory {
@@ -10,6 +11,7 @@ object LexerRunnerFactory {
     fun getLexerRunner(extension: String)  = when(extension) {
         in Language.JAVA.extensions -> makeLexerRunner(Language.JAVA, NaiveCodeLexer())
         in Language.PYTHON.extensions -> makeLexerRunner(Language.PYTHON, NaiveCodeLexer())
+        in Language.KOTLIN.extensions -> makeLexerRunner(Language.KOTLIN, NaiveCodeLexer())
         else -> LexerRunner(NaiveCodeLexer(), true).apply {
             setSentenceMarkers(true)
         }
@@ -18,6 +20,7 @@ object LexerRunnerFactory {
     fun getLexerRunner(language: Language) = when(language) {
         Language.JAVA -> makeLexerRunner(Language.JAVA, NaiveCodeLexer())
         Language.PYTHON -> makeLexerRunner(Language.PYTHON, NaiveCodeLexer())
+        Language.KOTLIN -> makeLexerRunner(Language.KOTLIN, NaiveCodeLexer())
         else -> LexerRunner(NaiveCodeLexer(), true).apply {
             setSentenceMarkers(true)
         }
@@ -26,6 +29,7 @@ object LexerRunnerFactory {
     private fun languageToFilter(language: Language) = when(language) {
         Language.JAVA -> JavaCodeFilter
         Language.PYTHON -> PythonCodeFilter
+        Language.KOTLIN -> KotlinCodeFilter
         Language.UNKNOWN -> DefaultCodeFilter
     }
 

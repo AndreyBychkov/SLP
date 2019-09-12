@@ -72,7 +72,7 @@ class ModelRunnerManager {
         }
     }
 
-    fun makePath(directory: File, subdirectoryName: String) =
+    private fun makePath(directory: File, subdirectoryName: String) =
         directory.path + File.separator + subdirectoryName
 
 }

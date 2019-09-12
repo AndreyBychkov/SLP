@@ -7,6 +7,9 @@ enum class Language {
     PYTHON {
         override val extensions = listOf("py", "pyw", "py3")
     },
+    KOTLIN {
+        override val extensions = listOf("kt", "kts")
+    },
     UNKNOWN {
         override val extensions = listOf("")
     };
