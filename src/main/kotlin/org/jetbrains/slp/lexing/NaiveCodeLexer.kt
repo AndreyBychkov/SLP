@@ -32,6 +32,9 @@ class NaiveCodeLexer : Lexer {
         |\*=
         |/=
         |%=
+        |>>
+        |<<
+        |::
         # Single operators
         |\+
         |-
@@ -39,6 +42,9 @@ class NaiveCodeLexer : Lexer {
         |=
         |%
         |/
+        # Other
+        |#
+        |&
         """, RegexOption.COMMENTS)
 
   private fun splitKeepDelimiters(input: String, regex: Regex, keep_empty: Boolean = false) : List<String> {
